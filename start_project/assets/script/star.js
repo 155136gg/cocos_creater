@@ -30,10 +30,29 @@ cc.Class({
     // LIFE-CYCLE CALLBACKS:
 
     // onLoad () {},
+    getPmdistance(){
+        var playerPos = this.canvas.pm.getPosition();
+        return this.node.position.sub(playerPos).mag();
+    },
+
+    onPicked(){
+        this.canvas.spawnNewStar();
+        this.canvas.updateScore();
+        this.node.destroy();
+    },
 
     start () {
 
     },
 
-    // update (dt) {},
+    update (dt) {
+        if (this.getPmdistance() < this.pickRadius) {
+            // 调用收集行为
+            this.onPicked();
+            return;
+        }
+        var opacity = 1 - this.canvas.timer/this.canvas.starD;
+        var minOpacity = 50;
+        this.node.opacity = minOpacity + Math.floor(opacity * (255 - minOpacity));
+    },
 });

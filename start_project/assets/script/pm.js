@@ -12,7 +12,11 @@ cc.Class({
         jumpH:0,
         jumpD:0,
         maxS:0,
-        acc:0
+        acc:0,
+        jumpAudio:{
+            default:null,
+            type:cc.AudioClip
+        }
         // foo: {
         //     // ATTRIBUTES:
         //     default: null,        // The default value will be used only when the component attaching
@@ -33,9 +37,16 @@ cc.Class({
     jump(){
         var up = cc.tween().by(this.jumpD,{y:this.jumpH}, {easing:'signOut'});
         var down = cc.tween().by(this.jumpD,{y:-this.jumpH}, {easing:'signIn'});
-        return cc.tween().sequence(up,down).repeatForever();
+        return cc.tween()
+                .sequence(up,down)
+                .call(this.playJumpSound,this)
+                .repeatForever();
     },
     // LIFE-CYCLE CALLBACKS:
+
+    playJumpSound(){
+        cc.audioEngine.playEffect(this.jumpAudio,false);
+    },
 
     keyDown(event){
         switch(event.keyCode){

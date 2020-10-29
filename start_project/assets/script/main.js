@@ -30,6 +30,16 @@ cc.Class({
             default:0,
             displayName:"Score",
             tooltips:"player score"
+        },
+
+        scoreLabel:{
+            default:null,
+            type:cc.Label
+        },
+
+        scoreAudio:{
+            default:null,
+            type: cc.AudioClip
         }
         // foo: {
         //     // ATTRIBUTES:
@@ -51,6 +61,9 @@ cc.Class({
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
+        this.timer = 0;
+        this.starD = 0;
+        this.score = 0;
         this.groundY = this.ground.y + this.ground.height/2;
         // 生成一个新的星星
         this.spawnNewStar();
@@ -60,6 +73,9 @@ cc.Class({
         var newStar = cc.instantiate(this.starPrefab);
         this.node.addChild(newStar);
         newStar.setPosition(this.getNewStarPosition());
+        newStar.getComponent('star').canvas = this;
+        this.starD = this.minD + Math.random() * (this.maxD - this.minD);
+        this.timer = 0;
     },
 
     getNewStarPosition(){
@@ -68,9 +84,26 @@ cc.Class({
         return cc.v2(randX,randY);
     },
 
+    updateScore(){
+        this.score++;
+        this.scoreLabel.string = 'Score: ' + this.score;
+        cc.audioEngine.playEffect(this.scoreAudio,false);
+    },
+
+    gameOver(){
+        this.pm.stopAllActions();
+        cc.director.loadScene('main');
+    },
+
     start () {
 
     },
 
-    // update (dt) {},
+    update (dt) {
+        if ( this.timer > this.starD) {
+            this.gameOver();
+            return;
+        }
+        this.timer +=dt;
+    },
 });
