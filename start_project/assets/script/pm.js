@@ -37,10 +37,10 @@ cc.Class({
     jump(){
         var up = cc.tween().by(this.jumpD,{y:this.jumpH}, {easing:'signOut'});
         var down = cc.tween().by(this.jumpD,{y:-this.jumpH}, {easing:'signIn'});
-        return cc.tween()
-                .sequence(up,down)
-                .call(this.playJumpSound,this)
-                .repeatForever();
+        var tween = cc.tween()
+                    .sequence(up,down)
+                    .call(this.playJumpSound,this);
+        return cc.tween().repeatForever(tween);
     },
     // LIFE-CYCLE CALLBACKS:
 
